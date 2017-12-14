@@ -5,11 +5,13 @@ import {MatGridListModule} from '@angular/material/grid-list';
 
 
 import { AppComponent } from './app.component';
+import { ChartDirective } from '../directives';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ChartDirective
   ],
   imports: [
     BrowserModule,
