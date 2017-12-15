@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/zip';
 import { chartOptions } from '../directives';
-import { HttpService, Request } from '../providers';
+import { Request } from '../providers';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import { MatDialog, MatSnackBar } from '@angular/material';
@@ -24,8 +24,7 @@ export class AppComponent {
   dRequests: Array<Request>;
 
 
-  constructor(private httpService: HttpService,
-              public dialog: MatDialog,
+  constructor(public dialog: MatDialog,
               public snackBar: MatSnackBar,
               private db: AngularFireDatabase) {
     this.chartOptions = chartOptions;
@@ -121,7 +120,6 @@ export class AppComponent {
   }
 
   getWaitingTime(epoch: number): string {
-    epoch = 1000; // todo remove
     const then = moment(epoch * 1000);
     const now = moment();
     return _.round(moment.duration(now.diff(then)).asHours()) + ' hours';
