@@ -3,6 +3,10 @@
 
 
   <div>Name - {{request.name}}</div>
+  <div style="margin-bottom: 10px">
+    <i class="fa fa-phone"> {{request.phone}}</i>
+    <i class="fa fa-envelope"> {{request.email}}</i>
+  </div>
   <span style="color:#6D6D6D">Waiting Time - {{getWaitingTime(request.timestamp)}}</span>
   <div style="color: #6D6D6D;">Request Type - {{request.type}}</div>
   <p class="mb-1" style="color:#6D6D6D;">Summary - {{request.summary}}</p>
