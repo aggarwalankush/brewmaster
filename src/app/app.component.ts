@@ -3,6 +3,8 @@ import { chartOptions } from '../directives';
 import { HttpService, Request } from '../providers';
 import * as moment from 'moment';
 import * as _ from 'lodash';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { DialogComponent } from './dialog/dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +19,7 @@ export class AppComponent implements AfterViewInit {
   aRequests: Array<Request>;
   dRequests: Array<Request>;
 
-  constructor(private httpService: HttpService) {
+  constructor(private httpService: HttpService, public dialog: MatDialog, public snackBar: MatSnackBar) {
     this.chartOptions = chartOptions;
   }
 
@@ -34,8 +36,40 @@ export class AppComponent implements AfterViewInit {
   }
 
   requestClicked(request: Request, type: string) {
-    console.log('request clicked - ' + type);
-    console.log(request);
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: { request: request, type: type }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+
+      if (result === 'a') {
+        this.removePRequest(request);
+        this.addARequest(request);
+      } else if (result === 'd') {
+        this.removePRequest(request);
+        this.addDRequest(request);
+      }
+
+    });
+  }
+
+  removePRequest(request: Request) {
+    _.remove(this.pRequests, r => r.name === request.name);
+  }
+
+  addARequest(request: Request) {
+    this.aRequests = this.sortRequests(_.concat(this.aRequests, request));
+    this.snackBar.open('Request Approved', '', {
+      duration: 1500
+    });
+  }
+
+  addDRequest(request: Request) {
+    this.dRequests = this.sortRequests(_.concat(this.dRequests, request));
+    this.snackBar.open('Request Declined', '', {
+      duration: 1500
+    });
   }
 
   drawGraph(data) {

@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<mat-dialog-content>
+
+
+  <div>Name - {{request.name}}</div>
+  <span style="color:#6D6D6D">Waiting Time - {{getWaitingTime(request.timestamp)}}</span>
+  <div style="color: #6D6D6D;">Request Type - {{request.type}}</div>
+  <p class="mb-1" style="color:#6D6D6D;">Summary - {{request.summary}}</p>
+  <p class="mb-1" style="color:#6D6D6D;">Details - {{request.details}}</p>
+
+
+</mat-dialog-content>
+<mat-dialog-actions>
+
+  <div *ngIf="showActions">
+    <button mat-button color="primary" [mat-dialog-close]="'a'" tabindex="1">Approve</button>
+    <button mat-button color="warn" [mat-dialog-close]="'d'" tabindex="1">Decline</button>
+    <button mat-button mat-dialog-close tabindex="-1">Cancel</button>
+  </div>
+  <button mat-button mat-dialog-close tabindex="1" *ngIf="!showActions">Cancel</button>
+</mat-dialog-actions>
