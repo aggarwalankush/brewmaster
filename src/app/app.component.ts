@@ -42,15 +42,15 @@ export class AppComponent implements AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
-
       if (result === 'a') {
         this.removePRequest(request);
         this.addARequest(request);
+        this.drawGraph([this.pRequests.length, this.aRequests.length, this.dRequests.length]);
       } else if (result === 'd') {
         this.removePRequest(request);
         this.addDRequest(request);
+        this.drawGraph([this.pRequests.length, this.aRequests.length, this.dRequests.length]);
       }
-
     });
   }
 

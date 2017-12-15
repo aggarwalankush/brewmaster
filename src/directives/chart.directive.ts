@@ -84,6 +84,9 @@ export let chartOptions = {
       dataLabels: {
         enabled: true
       }
+    },
+    series: {
+      animation: false
     }
   },
   credits: {
