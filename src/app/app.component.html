@@ -27,7 +27,7 @@
   <div class="col-md-4">
     <mat-card style="background-color: #F2F4F8;height: 75vh; overflow: scroll">
       <mat-card-title>
-        Accepted Requests
+        Approved Requests
       </mat-card-title>
       <mat-card-content>
         <ul class="list-group">
@@ -37,7 +37,18 @@
             <span class="badge badge-pill" style="background:#8fd17b;">{{getWaitingTime(request.timestamp)}}</span>
             <div>{{request.name}}</div>
             <div style="color: #6D6D6D;">Request Type - {{request.type}}</div>
-            <p class="mb-1" style="color:#a7afb2;">Summary - {{request.summary}}</p>
+            <div class="no-margin no-padding">
+              <div class="row">
+                <div class="col-md-10" style="float: left;">
+                  <p class="mb-1" style="color:#a7afb2;">Summary - {{request.summary}}</p>
+                </div>
+                <div class="col-md-2" style="float: right;">
+                  <div [id]="removeSpaces(request.name)+'loader'" class="circle-loader" style="float: right;">
+                    <div [id]="removeSpaces(request.name)+'checkmark'" class="checkmark draw"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </a>
         </ul>
       </mat-card-content>

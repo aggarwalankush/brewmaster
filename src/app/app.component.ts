@@ -31,6 +31,13 @@ export class AppComponent implements AfterViewInit {
         this.aRequests = this.sortRequests(data.accepted);
         this.dRequests = this.sortRequests(data.declined);
 
+        _.forEach(this.aRequests, request => {
+          setTimeout(() => {
+            $('#' + this.removeSpaces(request.name) + 'loader').toggleClass('load-complete');
+            $('#' + this.removeSpaces(request.name) + 'checkmark').toggle();
+          }, 0);
+        });
+
         this.drawGraph([this.pRequests.length, this.aRequests.length, this.dRequests.length]);
       });
   }
@@ -60,9 +67,13 @@ export class AppComponent implements AfterViewInit {
 
   addARequest(request: Request) {
     this.aRequests = this.sortRequests(_.concat(this.aRequests, request));
-    this.snackBar.open('Request Approved', '', {
+    this.snackBar.open('Request Approved, API initiated', '', {
       duration: 1500
     });
+    setTimeout(() => {
+      $('#' + this.removeSpaces(request.name) + 'loader').toggleClass('load-complete');
+      $('#' + this.removeSpaces(request.name) + 'checkmark').toggle();
+    }, 5000);
   }
 
   addDRequest(request: Request) {
@@ -95,5 +106,9 @@ export class AppComponent implements AfterViewInit {
     const then = moment(epoch * 1000);
     const now = moment();
     return _.round(moment.duration(now.diff(then)).asHours()) + ' hours';
+  }
+
+  removeSpaces(str: string): string {
+    return str.replace(/\s/g, '');
   }
 }
