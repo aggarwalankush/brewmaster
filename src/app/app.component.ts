@@ -23,6 +23,8 @@ export class AppComponent {
   aRequests: Array<Request> = [];
   dRequests: Array<Request> = [];
 
+  human = [];
+
   constructor(public dialog: MatDialog,
               public snackBar: MatSnackBar,
               public zone: NgZone,
@@ -91,10 +93,12 @@ export class AppComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'a') {
+        this.human.push(request.name + request.timestamp);
         this.removePRequest(request);
         this.addARequest(request);
         this.drawGraph([this.pRequests.length, this.aRequests.length, this.dRequests.length]);
       } else if (result === 'd') {
+        this.human.push(request.name + request.timestamp);
         this.removePRequest(request);
         this.addDRequest(request);
         this.drawGraph([this.pRequests.length, this.aRequests.length, this.dRequests.length]);
@@ -168,7 +172,11 @@ export class AppComponent {
 
   setBot(requests: Array<Request>, isBot: boolean): void {
     _.forEach(requests, request => {
-      request.bot = isBot;
+      if (this.human.indexOf(request.name + request.timestamp) === -1) {
+        request.bot = isBot;
+      } else {
+        request.bot = false;
+      }
     });
   }
 
