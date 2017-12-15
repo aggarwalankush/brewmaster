@@ -6,7 +6,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
 
 import { AppComponent } from './app.component';
 import { ChartDirective } from '../directives';
@@ -14,7 +15,16 @@ import { HttpService } from '../providers';
 import { HttpClientModule } from '@angular/common/http';
 import { DialogComponent } from './dialog/dialog.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 
+const config = {
+  apiKey: 'AIzaSyAj7eQ33XshszvUweCGQZ8r4GNkEBn3S90',
+  authDomain: 'brewfire-1ba0d.firebaseapp.com',
+  databaseURL: 'https://brewfire-1ba0d.firebaseio.com',
+  projectId: 'brewfire-1ba0d',
+  storageBucket: 'brewfire-1ba0d.appspot.com',
+  messagingSenderId: '300400788811'
+};
 
 @NgModule({
   declarations: [
@@ -25,6 +35,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    AngularFireModule.initializeApp(config),
+    AngularFireDatabaseModule,
+    AngularFirestoreModule,
     HttpClientModule,
     MatGridListModule,
     MatListModule,

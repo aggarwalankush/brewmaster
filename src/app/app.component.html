@@ -47,8 +47,8 @@
                   <p class="mb-1" style="color:#a7afb2;">Summary - {{request.summary}}</p>
                 </div>
                 <div class="col-md-2" style="float: right;">
-                  <div [id]="removeSpaces(request.name)+'loader'" class="circle-loader" style="float: right;">
-                    <div [id]="removeSpaces(request.name)+'checkmark'" class="checkmark draw"></div>
+                  <div [id]="removeSpaces(request.name)+request.timestamp+'loader'" class="circle-loader" style="float: right;">
+                    <div [id]="removeSpaces(request.name)+request.timestamp+'checkmark'" class="checkmark draw"></div>
                   </div>
                 </div>
               </div>

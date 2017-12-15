@@ -1,4 +1,6 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/zip';
 import { chartOptions } from '../directives';
 import { HttpService, Request } from '../providers';
 import * as moment from 'moment';
@@ -6,13 +8,14 @@ import * as _ from 'lodash';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { DialogComponent } from './dialog/dialog.component';
 import * as $ from 'jquery';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
   @ViewChild('requestChart') requestChart;
   chartOptions;
 
@@ -20,28 +23,42 @@ export class AppComponent implements AfterViewInit {
   aRequests: Array<Request>;
   dRequests: Array<Request>;
 
-  constructor(private httpService: HttpService, public dialog: MatDialog, public snackBar: MatSnackBar) {
+
+  constructor(private httpService: HttpService,
+              public dialog: MatDialog,
+              public snackBar: MatSnackBar,
+              private db: AngularFireDatabase) {
     this.chartOptions = chartOptions;
+    this.initDB();
   }
 
-  ngAfterViewInit() {
-    this.httpService.getRequestQuery()
-      .then(data => {
-        this.setBot(data.pending, false);
-        this.setBot(data.accepted, true);
-        this.setBot(data.declined, true);
-        this.pRequests = this.sortRequests(data.pending);
-        this.aRequests = this.sortRequests(data.accepted);
-        this.dRequests = this.sortRequests(data.declined);
+  initDB() {
+    Observable.zip(
+      this.db.list('pending').valueChanges(),
+      this.db.list('accepted').valueChanges(),
+      this.db.list('declined').valueChanges()
+    ).subscribe(([pData, aData, dData]) => {
+      this.pRequests = this.getJsonArray(pData, false);
+      this.aRequests = this.getJsonArray(aData, true);
+      this.dRequests = this.getJsonArray(dData, true);
 
-        _.forEach(this.aRequests, request => {
-          setTimeout(() => {
-            this.toggleAnimation(request);
-          }, 0);
-        });
-
-        this.drawGraph([this.pRequests.length, this.aRequests.length, this.dRequests.length]);
+      _.forEach(this.aRequests, request => {
+        setTimeout(() => {
+          this.toggleAnimation(request);
+        }, 0);
       });
+
+      this.drawGraph([this.pRequests.length, this.aRequests.length, this.dRequests.length]);
+    });
+  }
+
+  getJsonArray(data, setBot) {
+    const arr: any = [];
+    _.forEach(data, req => {
+      arr.push(JSON.parse(req));
+    });
+    this.setBot(arr, setBot);
+    return this.sortRequests(arr);
   }
 
   requestClicked(request: Request, type: string) {
@@ -104,6 +121,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   getWaitingTime(epoch: number): string {
+    epoch = 1000; // todo remove
     const then = moment(epoch * 1000);
     const now = moment();
     return _.round(moment.duration(now.diff(then)).asHours()) + ' hours';
@@ -120,7 +138,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   toggleAnimation(request: Request) {
-    $('#' + this.removeSpaces(request.name) + 'loader').toggleClass('load-complete');
-    $('#' + this.removeSpaces(request.name) + 'checkmark').toggle();
+    $('#' + this.removeSpaces(request.name) + request.timestamp + 'loader').toggleClass('load-complete');
+    $('#' + this.removeSpaces(request.name) + request.timestamp + 'checkmark').toggle();
   }
 }
