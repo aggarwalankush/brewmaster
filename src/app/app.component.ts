@@ -151,12 +151,18 @@ export class AppComponent {
   }
 
   getWaitingTime(epoch: number): string {
+    if (!epoch) {
+      epoch = moment().valueOf() / 1000;
+    }
     const then = moment(epoch * 1000);
     const now = moment();
     return _.round(moment.duration(now.diff(then)).asHours()) + ' hours';
   }
 
   removeSpaces(str: string): string {
+    if (!str) {
+      return '';
+    }
     return str.replace(/\s/g, '');
   }
 
