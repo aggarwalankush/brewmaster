@@ -64,11 +64,11 @@ export class AppComponent {
   }
 
   removeRequests(arr, aR, dR) {
-    _.forEach(aR, v => {
-      _.remove(arr, r => r.name === v.name);
+    _.forEach(aR, (v: any) => {
+      _.remove(arr, (r: any) => r.name === v.name);
     });
-    _.forEach(dR, v => {
-      _.remove(arr, r => r.name === v.name);
+    _.forEach(dR, (v: any) => {
+      _.remove(arr, (r: any) => r.name === v.name);
     });
     return arr;
   }
