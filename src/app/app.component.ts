@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import * as _ from 'lodash';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { DialogComponent } from './dialog/dialog.component';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-root',
@@ -26,15 +27,16 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.httpService.getRequestQuery()
       .then(data => {
-
+        this.setBot(data.pending, false);
+        this.setBot(data.accepted, true);
+        this.setBot(data.declined, true);
         this.pRequests = this.sortRequests(data.pending);
         this.aRequests = this.sortRequests(data.accepted);
         this.dRequests = this.sortRequests(data.declined);
 
         _.forEach(this.aRequests, request => {
           setTimeout(() => {
-            $('#' + this.removeSpaces(request.name) + 'loader').toggleClass('load-complete');
-            $('#' + this.removeSpaces(request.name) + 'checkmark').toggle();
+            this.toggleAnimation(request);
           }, 0);
         });
 
@@ -71,8 +73,7 @@ export class AppComponent implements AfterViewInit {
       duration: 1500
     });
     setTimeout(() => {
-      $('#' + this.removeSpaces(request.name) + 'loader').toggleClass('load-complete');
-      $('#' + this.removeSpaces(request.name) + 'checkmark').toggle();
+      this.toggleAnimation(request);
     }, 5000);
   }
 
@@ -110,5 +111,16 @@ export class AppComponent implements AfterViewInit {
 
   removeSpaces(str: string): string {
     return str.replace(/\s/g, '');
+  }
+
+  setBot(requests: Array<Request>, isBot: boolean): void {
+    _.forEach(requests, request => {
+      request.bot = isBot;
+    });
+  }
+
+  toggleAnimation(request: Request) {
+    $('#' + this.removeSpaces(request.name) + 'loader').toggleClass('load-complete');
+    $('#' + this.removeSpaces(request.name) + 'checkmark').toggle();
   }
 }

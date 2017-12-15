@@ -34,7 +34,11 @@
           <a href="#" class="list-group-item"
              *ngFor="let request of aRequests" style="color: black;"
              (click)="requestClicked(request,'a')">
-            <span class="badge badge-pill" style="background:#8fd17b;">{{getWaitingTime(request.timestamp)}}</span>
+            <span style="float: right;">
+              <i class="fa fa-paypal" *ngIf="request.bot"></i>
+              <i class="fa fa-user" *ngIf="!request.bot"></i>
+              <span class="badge badge-pill" style="background:#8fd17b;">{{getWaitingTime(request.timestamp)}}</span>
+            </span>
             <div>{{request.name}}</div>
             <div style="color: #6D6D6D;">Request Type - {{request.type}}</div>
             <div class="no-margin no-padding">
@@ -65,7 +69,11 @@
           <a href="#" class="list-group-item"
              *ngFor="let request of dRequests" style="color: black;"
              (click)="requestClicked(request,'d')">
-            <span class="badge badge-pill" style="background:#FD6585;">{{getWaitingTime(request.timestamp)}}</span>
+            <span style="float: right;">
+              <i class="fa fa-paypal" *ngIf="request.bot"></i>
+              <i class="fa fa-user" *ngIf="!request.bot"></i>
+              <span class="badge badge-pill" style="background:#FD6585;">{{getWaitingTime(request.timestamp)}}</span>
+            </span>
             <div>{{request.name}}</div>
             <div style="color: #6D6D6D;">Request Type - {{request.type}}</div>
             <p class="mb-1" style="color:#a7afb2;">Summary - {{request.summary}}</p>

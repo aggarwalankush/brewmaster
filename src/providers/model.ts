@@ -9,6 +9,7 @@ export interface Request {
   type: string;
   summary: string;
   details: string;
+  bot?: boolean;
   timestamp: number;
 }
 
