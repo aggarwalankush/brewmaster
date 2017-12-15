@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, NgZone, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/zip';
 import { chartOptions } from '../directives';
@@ -19,16 +19,19 @@ export class AppComponent {
   @ViewChild('requestChart') requestChart;
   chartOptions;
 
-  pRequests: Array<Request>;
-  aRequests: Array<Request>;
-  dRequests: Array<Request>;
-
+  pRequests: Array<Request> = [];
+  aRequests: Array<Request> = [];
+  dRequests: Array<Request> = [];
 
   constructor(public dialog: MatDialog,
               public snackBar: MatSnackBar,
+              public zone: NgZone,
               private db: AngularFireDatabase) {
     this.chartOptions = chartOptions;
     this.initDB();
+    setInterval(() => {
+      this.initDB();
+    }, 2000);
   }
 
   initDB() {
@@ -37,24 +40,45 @@ export class AppComponent {
       this.db.list('accepted').valueChanges(),
       this.db.list('declined').valueChanges()
     ).subscribe(([pData, aData, dData]) => {
-      this.pRequests = this.getJsonArray(pData, false);
-      this.aRequests = this.getJsonArray(aData, true);
-      this.dRequests = this.getJsonArray(dData, true);
-
-      _.forEach(this.aRequests, request => {
-        setTimeout(() => {
-          this.toggleAnimation(request);
-        }, 0);
+      this.zone.run(() => {
+        const tempAR = this.getJsonArray(aData, true);
+        if (!_.isEqual(this.aRequests, tempAR)) {
+          _.forEach(tempAR, request => {
+            setTimeout(() => {
+              this.toggleAnimation(request);
+            }, 0);
+          });
+          this.aRequests = tempAR;
+        }
+        const tempDR = this.getJsonArray(dData, true);
+        if (!_.isEqual(this.dRequests, tempDR)) {
+          this.dRequests = tempDR;
+        }
+        const tempPR = this.removeRequests(this.getJsonArray(pData, false), this.aRequests, this.dRequests);
+        if (!_.isEqual(this.pRequests, tempPR)) {
+          this.pRequests = tempPR;
+        }
+        this.drawGraph([this.pRequests.length, this.aRequests.length, this.dRequests.length]);
       });
-
-      this.drawGraph([this.pRequests.length, this.aRequests.length, this.dRequests.length]);
     });
+  }
+
+  removeRequests(arr, aR, dR) {
+    _.forEach(aR, v => {
+      _.remove(arr, r => r.name === v.name);
+    });
+    _.forEach(dR, v => {
+      _.remove(arr, r => r.name === v.name);
+    });
+    return arr;
   }
 
   getJsonArray(data, setBot) {
     const arr: any = [];
     _.forEach(data, req => {
-      arr.push(JSON.parse(req));
+      const parsed = JSON.parse(req);
+      parsed.timestamp = _.round(parsed.timestamp);
+      arr.push(parsed);
     });
     this.setBot(arr, setBot);
     return this.sortRequests(arr);
@@ -66,7 +90,6 @@ export class AppComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
       if (result === 'a') {
         this.removePRequest(request);
         this.addARequest(request);
@@ -80,11 +103,16 @@ export class AppComponent {
   }
 
   removePRequest(request: Request) {
-    _.remove(this.pRequests, r => r.name === request.name);
+    setTimeout(() => {
+      _.remove(this.pRequests, r => r.name === request.name);
+    }, 0);
   }
 
   addARequest(request: Request) {
     this.aRequests = this.sortRequests(_.concat(this.aRequests, request));
+    setTimeout(() => {
+      this.db.list('accepted').push(JSON.stringify(request));
+    }, 0);
     this.snackBar.open('Request Approved, API initiated', '', {
       duration: 1500
     });
@@ -95,6 +123,9 @@ export class AppComponent {
 
   addDRequest(request: Request) {
     this.dRequests = this.sortRequests(_.concat(this.dRequests, request));
+    setTimeout(() => {
+      this.db.list('declined').push(JSON.stringify(request));
+    }, 0);
     this.snackBar.open('Request Declined', '', {
       duration: 1500
     });
