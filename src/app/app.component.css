@@ -1,5 +1,13 @@
 mat-grid-tile {
-  background: lightblue;
+  background-color: lightblue;
+}
+
+mat-list-item {
+  border: silver thin solid;
+}
+
+mat-card {
+  padding: 12px;
 }
 
 .no-padding {

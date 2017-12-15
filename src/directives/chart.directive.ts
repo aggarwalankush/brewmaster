@@ -89,5 +89,10 @@ export let chartOptions = {
   credits: {
     enabled: false
   },
-  series: []
+  series: [],
+  tooltip: {
+    formatter: function () {
+      return '<b>' + this.x + '</b>' + ': ' + this.y;
+    }
+  }
 };

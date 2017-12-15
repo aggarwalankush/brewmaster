@@ -3,3 +3,66 @@
     <div [myChart]="chartOptions" #requestChart="myChart" class="chart-half"></div>
   </div>
 </div>
+<div class="row no-margin">
+  <div class="col-md-4">
+    <mat-card style="background-color: #F2F4F8;height: 75vh; overflow: scroll">
+      <mat-card-title>
+        Pending Requests
+      </mat-card-title>
+      <mat-card-content>
+        <ul class="list-group">
+          <a href="#" class="list-group-item"
+             *ngFor="let request of requests?.pending" style="color: black;"
+             (click)="requestClicked(request,'pending')">
+            <span class="badge badge-pill" style="background:#1D9DFC;">{{getWaitingTime(request.timestamp)}}</span>
+            <div>{{request.name}}</div>
+            <div style="color: #6D6D6D;">Request Type - {{request.type}}</div>
+            <p class="mb-1" style="color:#a7afb2;">Summary - {{request.summary}}</p>
+          </a>
+        </ul>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-md-4">
+    <mat-card style="background-color: #F2F4F8;height: 75vh; overflow: scroll">
+      <mat-card-title>
+        Accepted Requests
+      </mat-card-title>
+      <mat-card-content>
+        <ul class="list-group">
+          <a href="#" class="list-group-item"
+             *ngFor="let request of requests?.accepted" style="color: black;"
+             (click)="requestClicked(request,'accepted')">
+            <span class="badge badge-pill" style="background:#8fd17b;">{{getWaitingTime(request.timestamp)}}</span>
+            <div>{{request.name}}</div>
+            <div style="color: #6D6D6D;">Request Type - {{request.type}}</div>
+            <p class="mb-1" style="color:#a7afb2;">Summary - {{request.summary}}</p>
+          </a>
+        </ul>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-md-4">
+    <mat-card style="background-color: #F2F4F8;height: 75vh; overflow: scroll">
+      <mat-card-title>
+        Declined Requests
+      </mat-card-title>
+      <mat-card-content>
+        <ul class="list-group">
+          <a href="#" class="list-group-item"
+             *ngFor="let request of requests?.declined" style="color: black;"
+             (click)="requestClicked(request,'declined')">
+            <span class="badge badge-pill" style="background:#FD6585;">{{getWaitingTime(request.timestamp)}}</span>
+            <div>{{request.name}}</div>
+            <div style="color: #6D6D6D;">Request Type - {{request.type}}</div>
+            <p class="mb-1" style="color:#a7afb2;">Summary - {{request.summary}}</p>
+          </a>
+        </ul>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+
+</div>
