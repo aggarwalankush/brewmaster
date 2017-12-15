@@ -12,8 +12,8 @@
       <mat-card-content>
         <ul class="list-group">
           <a href="#" class="list-group-item"
-             *ngFor="let request of requests?.pending" style="color: black;"
-             (click)="requestClicked(request,'pending')">
+             *ngFor="let request of pRequests" style="color: black;"
+             (click)="requestClicked(request,'p')">
             <span class="badge badge-pill" style="background:#1D9DFC;">{{getWaitingTime(request.timestamp)}}</span>
             <div>{{request.name}}</div>
             <div style="color: #6D6D6D;">Request Type - {{request.type}}</div>
@@ -32,8 +32,8 @@
       <mat-card-content>
         <ul class="list-group">
           <a href="#" class="list-group-item"
-             *ngFor="let request of requests?.accepted" style="color: black;"
-             (click)="requestClicked(request,'accepted')">
+             *ngFor="let request of aRequests" style="color: black;"
+             (click)="requestClicked(request,'a')">
             <span class="badge badge-pill" style="background:#8fd17b;">{{getWaitingTime(request.timestamp)}}</span>
             <div>{{request.name}}</div>
             <div style="color: #6D6D6D;">Request Type - {{request.type}}</div>
@@ -52,8 +52,8 @@
       <mat-card-content>
         <ul class="list-group">
           <a href="#" class="list-group-item"
-             *ngFor="let request of requests?.declined" style="color: black;"
-             (click)="requestClicked(request,'declined')">
+             *ngFor="let request of dRequests" style="color: black;"
+             (click)="requestClicked(request,'d')">
             <span class="badge badge-pill" style="background:#FD6585;">{{getWaitingTime(request.timestamp)}}</span>
             <div>{{request.name}}</div>
             <div style="color: #6D6D6D;">Request Type - {{request.type}}</div>

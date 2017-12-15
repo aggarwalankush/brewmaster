@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { chartOptions } from '../directives';
-import { HttpService, Request, RequestQuery } from '../providers';
+import { HttpService, Request } from '../providers';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
@@ -12,7 +12,10 @@ import * as _ from 'lodash';
 export class AppComponent implements AfterViewInit {
   @ViewChild('requestChart') requestChart;
   chartOptions;
-  requests: RequestQuery;
+
+  pRequests: Array<Request>;
+  aRequests: Array<Request>;
+  dRequests: Array<Request>;
 
   constructor(private httpService: HttpService) {
     this.chartOptions = chartOptions;
@@ -21,9 +24,12 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.httpService.getRequestQuery()
       .then(data => {
-        this.sortData(data);
-        this.requests = data;
-        this.drawGraph([data.pending.length, data.accepted.length, data.declined.length]);
+
+        this.pRequests = this.sortRequests(data.pending);
+        this.aRequests = this.sortRequests(data.accepted);
+        this.dRequests = this.sortRequests(data.declined);
+
+        this.drawGraph([this.pRequests.length, this.aRequests.length, this.dRequests.length]);
       });
   }
 
@@ -47,10 +53,8 @@ export class AppComponent implements AfterViewInit {
     chartObj.chart.redraw();
   }
 
-  sortData(data: RequestQuery) {
-    _.forEach(data, (value, key) => {
-      data[key] = _.sortBy(value, ['timestamp']);
-    });
+  sortRequests(requests: Array<Request>): Array<Request> {
+    return _.sortBy(requests, ['timestamp']);
   }
 
   getWaitingTime(epoch: number): string {
